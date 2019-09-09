@@ -1,15 +1,15 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE UnboxedTuples #-}
 
-module UArray
-    ( UArray
+module Data.UArr
+    ( UArr
     , BoxArray(..)
     , new
     , newb
-    , UArray.map
+    , Data.UArr.map
     , mapb
-    , UArray.foldl
-    , UArray.foldr
+    , Data.UArr.foldl
+    , Data.UArr.foldr
     , toList
     , index
     , indexb
@@ -19,7 +19,7 @@ module UArray
 where
 
 {-# ANN BoxArray "HLint: ignore" #-}
-data BoxArray a = BoxArray (UArray a)
+data BoxArray a = BoxArray (UArr a)
 
 newb
     :: a
@@ -45,15 +45,15 @@ newb !i0 !i1 !i2 !i3 !i4 !i5 !i6 !i7 !i8 !i9 !i10 !i11 !i12 !i13 !i14 !i15 =
 indexb :: BoxArray a -> Int -> a
 indexb (BoxArray u) = index u
 
-updateb :: BoxArray a -> Int -> a -> UArray a
+updateb :: BoxArray a -> Int -> a -> UArr a
 updateb (BoxArray u) = update u
 
-mapb :: (a -> b) -> BoxArray a -> UArray b
-mapb f (BoxArray u) = UArray.map f u
+mapb :: (a -> b) -> BoxArray a -> UArr b
+mapb f (BoxArray u) = Data.UArr.map f u
 
-type UArray a = (# a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a #)
+type UArr a = (# a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a #)
 
-foldr :: (a -> b -> b) -> b -> UArray a -> b
+foldr :: (a -> b -> b) -> b -> UArr a -> b
 foldr f b (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
     = f i0
         $ f i1
@@ -72,7 +72,7 @@ foldr f b (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i1
         $ f i14
         $ f i15 b
 
-foldl :: (a -> b -> b) -> b -> UArray a -> b
+foldl :: (a -> b -> b) -> b -> UArr a -> b
 foldl f b (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
     = f i15
         $ f i14
@@ -91,10 +91,10 @@ foldl f b (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i1
         $ f i1
         $ f i0 b
 
-toList :: UArray a -> [a]
-toList = UArray.foldr (:) []
+toList :: UArr a -> [a]
+toList = Data.UArr.foldr (:) []
 
-map :: (a -> b) -> UArray a -> UArray b
+map :: (a -> b) -> UArr a -> UArr b
 map f (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
     = (# f i0
       ,  f i1
@@ -131,12 +131,12 @@ new
     -> a
     -> a
     -> a
-    -> UArray a
+    -> UArr a
 
 new !i0 !i1 !i2 !i3 !i4 !i5 !i6 !i7 !i8 !i9 !i10 !i11 !i12 !i13 !i14 !i15 =
     (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
 
-index :: UArray a -> Int -> a
+index :: UArr a -> Int -> a
 index (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #) i
     = case i of
         0  -> i0
@@ -157,7 +157,7 @@ index (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
         15 -> i15
         _  -> error $ "Index " ++ show i ++ " out of bounds"
 
-update :: UArray a -> Int -> a -> UArray a
+update :: UArr a -> Int -> a -> UArr a
 update (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #) i a
     = case i of
         0 ->
