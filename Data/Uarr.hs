@@ -1,4 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE UnboxedTuples #-}
 
 module Data.UArr
@@ -20,6 +21,10 @@ where
 
 {-# ANN BoxArray "HLint: ignore" #-}
 data BoxArray a = BoxArray (UArr a)
+    deriving ( Functor )
+
+instance (Show a) => Show (BoxArray a) where
+    show (BoxArray u) = uShow u
 
 newb
     :: a
@@ -52,6 +57,9 @@ mapb :: (a -> b) -> BoxArray a -> UArr b
 mapb f (BoxArray u) = Data.UArr.map f u
 
 type UArr a = (# a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a #)
+
+uShow :: (Show a) => UArr a -> String
+uShow u = show $ toList u
 
 foldr :: (a -> b -> b) -> b -> UArr a -> b
 foldr f b (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
