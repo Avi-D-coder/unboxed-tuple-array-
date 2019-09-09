@@ -1,11 +1,16 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE UnboxedTuples #-}
 
-module UTupleArray
+module UArray
     ( UArray
     , BoxArray(..)
     , new
     , newb
+    , UArray.map
+    , mapb
+    , UArray.foldl
+    , UArray.foldr
+    , toList
     , index
     , indexb
     , update
@@ -43,7 +48,71 @@ indexb (BoxArray u) = index u
 updateb :: BoxArray a -> Int -> a -> UArray a
 updateb (BoxArray u) = update u
 
+mapb :: (a -> b) -> BoxArray a -> UArray b
+mapb f (BoxArray u) = UArray.map f u
+
 type UArray a = (# a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a #)
+
+foldr :: (a -> b -> b) -> b -> UArray a -> b
+foldr f b (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
+    = f i0
+        $ f i1
+        $ f i2
+        $ f i3
+        $ f i4
+        $ f i5
+        $ f i6
+        $ f i7
+        $ f i8
+        $ f i9
+        $ f i10
+        $ f i11
+        $ f i12
+        $ f i13
+        $ f i14
+        $ f i15 b
+
+foldl :: (a -> b -> b) -> b -> UArray a -> b
+foldl f b (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
+    = f i15
+        $ f i14
+        $ f i13
+        $ f i12
+        $ f i11
+        $ f i10
+        $ f i9
+        $ f i8
+        $ f i7
+        $ f i6
+        $ f i5
+        $ f i4
+        $ f i3
+        $ f i2
+        $ f i1
+        $ f i0 b
+
+toList :: UArray a -> [a]
+toList = UArray.foldr (:) []
+
+map :: (a -> b) -> UArray a -> UArray b
+map f (# i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15 #)
+    = (# f i0
+      ,  f i1
+      ,  f i2
+      ,  f i3
+      ,  f i4
+      ,  f i5
+      ,  f i6
+      ,  f i7
+      ,  f i8
+      ,  f i9
+      ,  f i10
+      ,  f i11
+      ,  f i12
+      ,  f i13
+      ,  f i14
+      ,  f i15
+      #)
 
 new
     :: a
